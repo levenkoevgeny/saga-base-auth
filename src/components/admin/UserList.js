@@ -69,13 +69,6 @@ export default function UserList() {
   const status = useSelector(selectStatus)
   const error = useSelector(selectError)
 
-  // const [searchForm, setSearchForm] = useState({
-  //   username: "",
-  //   last_name: "",
-  //   is_superuser: "",
-  //   is_active: "",
-  // })
-
   const [debouncedState, setDebouncedState] = useState({
     username: "",
     last_name: "",

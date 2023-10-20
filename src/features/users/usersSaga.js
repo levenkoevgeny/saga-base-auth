@@ -13,10 +13,10 @@ export function* fetchUsers(action) {
   }
 }
 
-export function* watchIncrementAsync() {
+export function* watchFetchUsers() {
   yield takeEvery("USERS_ALL_FETCH", fetchUsers)
 }
 
 export default function* rootSaga() {
-  yield all([watchIncrementAsync()])
+  yield all([watchFetchUsers()])
 }
