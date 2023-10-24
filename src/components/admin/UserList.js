@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import _ from "lodash"
 import {
   selectAllUsers,
@@ -64,6 +65,7 @@ const UserItem = ({ user, counter }) => {
 
 export default function UserList() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const users = useSelector(selectAllUsers)
   const status = useSelector(selectStatus)
@@ -126,6 +128,7 @@ export default function UserList() {
   const logout = () => {
     console.log("logout fun")
     dispatch({ type: "LOGOUT" })
+    navigate("/login")
   }
 
   return (

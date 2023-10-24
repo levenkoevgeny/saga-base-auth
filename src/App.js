@@ -36,9 +36,6 @@ function protectedLoader({ request }) {
   const isLoggedIn = state.auth.isLoggedIn
   const token = state.auth.token
 
-  console.log("App logIn", isLoggedIn)
-  console.log("App token", token)
-
   if (!isLoggedIn) {
     let params = new URLSearchParams()
     params.set("from", new URL(request.url).pathname)

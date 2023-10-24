@@ -4,12 +4,9 @@ import store from "../../app/store"
 import { getLocalToken, removeLocalToken, saveLocalToken } from "../../utils"
 
 export function* checkLoggedIn() {
-
   const isLoggedIn = yield select((state) => state.auth.isLoggedIn)
 
-
   if (!isLoggedIn) {
-
     let token = yield select((state) => state.auth.token)
     if (!token) {
       const localToken = getLocalToken()
@@ -43,19 +40,12 @@ function* logOut() {
   yield put({ type: "auth/userIsLoggedChange", payload: false })
 }
 
-
 export function* fetchToken(username, password) {
   try {
     const response = yield call(authAPI.logInGetToken, username, password)
     return response.data
-  } catch (error) {
-
-  }
-
-
-
+  } catch (error) {}
 }
-
 
 export function* userLogin(action) {
   try {
@@ -70,35 +60,27 @@ export function* userLogin(action) {
       yield put({ type: "auth/userTokenChange", payload: token })
       yield put({ type: "auth/userIsLoggedChange", payload: true })
     }
-  } catch (error) { }
+  } catch (error) {}
 }
 
-
 export function* loginFlow() {
-
-  const { payload: { username, password } } = yield take('LOGIN_REQUESTED')
+  const {
+    payload: { username, password },
+  } = yield take("LOGIN_REQUESTED")
   const data = yield call(fetchToken, username, password)
   const token = data.access
   const refresh = data.refresh
   if (token) {
-    console.log("token", token)
     saveLocalToken(token)
     yield put({ type: "auth/userTokenChange", payload: token })
     yield put({ type: "auth/userIsLoggedChange", payload: true })
-
   }
-
-
 }
 
 export function* logOutFlow() {
-  yield take('LOGOUT')
-  console.log('logout from saga')
+  yield take("LOGOUT")
   yield logOut()
 }
-
-
-
 
 export function* watchCheckLoggedIn() {
   yield takeEvery("AUTH_CHECK_LOGIN", checkLoggedIn)
