@@ -123,8 +123,14 @@ export default function UserList() {
     content = <div>{error}</div>
   }
 
+  const logout = () => {
+    console.log("logout fun")
+    dispatch({ type: "LOGOUT" })
+  }
+
   return (
     <div className="container">
+      <button onClick={logout}>log out</button>
       <div className="my-3"></div>
       <h1>Users list</h1>
       <div>
