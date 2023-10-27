@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 
-import {} from "../../utils"
+import { authAPI } from "../../api/authAPI"
+import { getLocalToken, removeLocalToken, saveLocalToken } from "../../utils"
 
 const initialState = {
   token: null,
@@ -10,6 +11,67 @@ const initialState = {
   user: null,
   isLoading: true,
 }
+
+export const checkLoggedIn = createAsyncThunk(
+  "auth/checkLoggedIn",
+  async (_, { getState, dispatch }) => {
+    const state = getState()
+    const isLoggedIn = state.auth.isLoggedIn
+    if (!isLoggedIn) {
+      let token = state.auth.token
+      if (!token) {
+        const localToken = getLocalToken()
+        if (localToken) {
+          dispatch(userTokenChange(localToken))
+          token = localToken
+        }
+        if (token) {
+          try {
+            const userDataResponse = await authAPI.getUserData(token)
+            const userData = await userDataResponse.data
+            dispatch(userDataChange(userData))
+            dispatch(userIsLoggedChange(true))
+          } catch (error) {
+            removeLocalToken()
+            dispatch(userTokenChange(null))
+            dispatch(userIsLoggedChange(null))
+          }
+        }
+      }
+    }
+  },
+)
+
+export const removeLoggedIn = createAsyncThunk(
+  "auth/removeLoggedIn",
+  async (_, { getState, dispatch }) => {
+    removeLocalToken()
+    dispatch(userTokenChange(null))
+    dispatch(userIsLoggedChange(null))
+  },
+)
+
+export const userLogin = createAsyncThunk(
+  "auth/login",
+  async ({ username, password }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await authAPI.logInGetToken(username, password)
+      const data = await response.data
+      const token = data.access
+      if (token) {
+        saveLocalToken(token)
+        dispatch(userTokenChange(token))
+        dispatch(userIsLoggedChange(true))
+        const userDataResponse = await authAPI.getUserData(token)
+        const userData = await userDataResponse.data
+        dispatch(userDataChange(userData))
+      }
+      return
+    } catch (error) {
+      dispatch(userIsErrorChange(true))
+    }
+  },
+)
 
 const authSlice = createSlice({
   name: "auth",

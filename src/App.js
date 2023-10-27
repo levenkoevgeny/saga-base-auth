@@ -12,6 +12,8 @@ import LoginPage from "./components/auth/LoginPage"
 
 import store from "./app/store"
 
+import { checkLoggedIn } from "./features/auth/authSlice"
+
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/admin" /> },
   {
@@ -31,10 +33,11 @@ function App() {
 export default App
 
 function protectedLoader({ request }) {
-  store.dispatch({ type: "AUTH_CHECK_LOGIN" })
+  store.dispatch(checkLoggedIn())
   const state = store.getState()
   const isLoggedIn = state.auth.isLoggedIn
-  const token = state.auth.token
+
+  console.log(isLoggedIn)
 
   if (!isLoggedIn) {
     let params = new URLSearchParams()
