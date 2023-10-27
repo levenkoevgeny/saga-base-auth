@@ -53,7 +53,7 @@ export const removeLoggedIn = createAsyncThunk(
 
 export const userLogin = createAsyncThunk(
   "auth/login",
-  async ({ username, password }, { dispatch, rejectWithValue }) => {
+  async ({ username, password }, { dispatch }) => {
     try {
       const response = await authAPI.logInGetToken(username, password)
       const data = await response.data
