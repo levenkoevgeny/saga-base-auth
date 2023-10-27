@@ -37,8 +37,6 @@ function protectedLoader({ request }) {
   const state = store.getState()
   const isLoggedIn = state.auth.isLoggedIn
 
-  console.log(isLoggedIn)
-
   if (!isLoggedIn) {
     let params = new URLSearchParams()
     params.set("from", new URL(request.url).pathname)
